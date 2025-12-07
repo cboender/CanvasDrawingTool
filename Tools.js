@@ -1,7 +1,8 @@
 class Tool {
-	constructor(name, cursor) {
+	constructor(name, cursor, actionHandler) {
 		this.name =name;
 		this.cursor = cursor || 'default'
+        this.actionHandler = actionHandler;
 	}
 	
 	pointerdown(event, layer, graphics) {}
@@ -11,8 +12,8 @@ class Tool {
 
 class MoveTool extends Tool {
 	#active = false;
-	constructor() {
-		super('move', 'move');
+	constructor(actionHandler) {
+		super('move', 'move', actionHandler);
 	}
 	
 	pointerdown(event,layer,graphics) {
@@ -20,6 +21,7 @@ class MoveTool extends Tool {
 			return;
 		}
 		// TODO get object in layer?
+        //TODO track original position and implement action handler
 		this.#active = true;
 		event.target.setPointerCapture(event.pointerId);
 	}
@@ -45,8 +47,8 @@ class PenTool extends Tool {
 	#outside = false;
 	#points = [];
 	#path;
-	constructor() {
-		super('pen', "url('/images/edit.gif'), auto");
+	constructor(actionHandler) {
+		super('pen', "url('/images/edit.gif'), auto", actionHandler);
 		this.width = 5;
 		this.color = '000000';
 		this.opacity = 100;
@@ -80,6 +82,9 @@ class PenTool extends Tool {
 			// Tell it to redraw based on the path created
 			graphics.clearRect(0,0,layer.width, layer.height);
 			layer.addNode(this.#path);
+            this.actionHandler.addAction(new Action("Free Draw Line", () => {
+                layer.removeNode();
+            }));
 			layer.redraw();
 		}
 		
@@ -105,8 +110,8 @@ class LineTool extends Tool {
 	#active = false;
 	#point
 	#path
-	constructor() {
-		super('line', "url('/images/edit.gif'), auto");
+	constructor(actionHandler) {
+		super('line', "url('/images/edit.gif'), auto", actionHandler);
 		this.width = 5;
 		this.color = '000000';
 		this.opacity = 100;
@@ -135,6 +140,9 @@ class LineTool extends Tool {
 			
 			// Tell it to redraw based on the path created
 			layer.addNode(this.#path);
+            this.actionHandler.addAction(new Action("Draw Straight Line", () => {
+                layer.removeNode();
+            }));
 			layer.redraw();
 			graphics.clearRect(0,0,layer.width, layer.height);
 		}
@@ -155,8 +163,8 @@ class RectangleTool extends Tool {
 	#active = false;
 	#point;
 	#path;
-	constructor() {
-		super('rectangle', "url('/images/edit.gif'), auto");
+	constructor(actionHandler) {
+		super('rectangle', "url('/images/edit.gif'), auto", actionHandler);
 		this.linewidth = 2;
 		this.linecolor = '000000';
 		this.fillcolor = '0000FF';
@@ -188,6 +196,9 @@ class RectangleTool extends Tool {
 			
 			// Tell it to redraw based on the path created
 			layer.addNode(this.#path);
+            this.actionHandler.addAction(new Action("Draw Rectangle", () => {
+                layer.removeNode();
+            }));
 			layer.redraw();
 			graphics.clearRect(0,0,layer.width, layer.height);
 		}

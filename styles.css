@@ -1,0 +1,106 @@
+#PageWrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.MediaWrapper {
+    position: relative;
+    top: 44px;
+    height: calc(100% - 44px);
+    width: 100%;
+}
+
+.MediaDiv {
+    width: calc(100% - 401px);
+    height: 100%;
+    position: absolute;
+    left: 200px;
+    border-left: 1px solid #BBBDC0;
+    border-right: 1px solid #BBBDC0;
+    background-color: #888;
+    text-align: center;
+    padding: 0px;
+    overflow:auto;
+    touch-action: none;
+}
+
+.ToolsDiv {
+    height: 100%;
+    border: none;
+    background-color: #eaeaea;
+    position: absolute;
+    left: 0px;
+    width: 200px;
+}
+
+.SettingsDiv {
+    height: 100%;
+    border: none;
+    background-color: #eaeaea;
+    position: absolute;
+    right: 0px;
+    width: 200px;
+}
+
+.propertyHeaderText {
+    display: block;
+    padding: 5px 5px 5px 15px;
+    border-bottom: 1px solid #BBBDC0;
+}
+
+.propertyHeader {
+    font-size: 18px;
+    white-space: nowrap;
+    min-height: 24px;
+}
+
+.propertyContent {
+    padding: 5px;
+}
+.editor {
+    background-color: #444;
+    position: absolute;
+    display: inline-block;
+    left: 0px;
+    top: 0px;
+}
+
+#event_editor {
+    background: transparent;
+}
+
+.Tool {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 1px solid #BBBDC0;
+    font-size: 14px;
+    vertical-align: middle;
+    text-align: center;
+    padding: 5px;
+    cursor: pointer;
+}
+.Tool:before {
+    content : ' ';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.Tool.selected {
+    background: #AEAEFF;
+}
+
+.settingGroup {
+    display: none;
+}
+
+.settingGroup.visible {
+    display: grid;
+    column-gap: 5px;
+    grid-template-columns: auto 1fr;
+}
+.settingGroup label {
+    text-align: right;
+}

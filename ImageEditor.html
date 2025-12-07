@@ -1,313 +1,159 @@
 <!DOCTYPE HTML>
 <html lang="en">
-	<head>
-		<title>Image Editor</title>
-		
-		<style>
-		#PageWrapper {
-			position: absolute;
-			width: 100%;
-			height: 100%;
-		}
+<head>
+    <title>Image Editor</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function addClass(element, clazz) {
+            element.classList.add(clazz);
+        }
+        function removeClass(element, clazz) {
+            element.classList.remove(clazz);
+        }
 
-		/* Button Panel */
-		.buttonPanel {
-			background-color: #FaFaFa;
-			border: none;
-			border-bottom: 1px solid #BBBDC0;
-			padding: 0px;
-			position: absolute;
-			width: 100%;
-			top: 0px;
-			height: 43px;
-		}
+        function getElement(id) {
+            return document.getElementById(id);
+        }
 
-		.buttonPanelContent {
-			overflow-y: hidden;
-		}
+        function getElements(clazz, parent) {
+            parent = parent || document;
+            return parent.getElementsByClassName(clazz)
+        }
+    </script>
+</head>
+<body>
+<form>
+    <input id="imageData" name="imageData" type="hidden" />
+</form>
 
-		.ui-button.IconButton {
-			border-radius: 0px;
-			font-size: 20px;
-			margin-left: 0px;
-			background-color: transparent;
-		}
 
-		.ui-button.IconButton:hover {
-			color: #6A8CFF;
-		}
+<div id="PageWrapper">
+    <div class="MediaWrapper">
+        <div class="ToolsDiv">
+            <div class="propertyHeader">
+                <div class="ExpandedContent propertyHeaderText">
+                    Tools
+                </div>
+            </div>
+            <div id="toolContainer" class="propertyContent">
+                <div class="Tool selected" onclick="setPaintTool('pen',this);" title="Pen">
+                    Pen
+                </div>
+                <div class="Tool" onclick="setPaintTool('move',this)" title="Move">
+                    Move
+                </div>
+                <div class="Tool" onclick="setPaintTool('line',this);" title="Line">
+                    Line
+                </div>
+                <div class="Tool" style="width: 75px;" onclick="setPaintTool('rectangle',this);" title="Rectangle">
+                    Rectangle
+                </div>
+            </div>
+            <div class="propertyHeader">
+                <div class="ExpandedContent propertyHeaderText">
+                    Actions
+                </div>
+            </div>
 
-		.ui-button.IconButton:not(.ui-state-focus) {
-			border: none;
-		}
+            <div class="propertyContent">
+                <button onclick="undo();">Undo</button>
+                <button onclick="download();">Download</button>
+            </div>
+        </div>
 
-		.buttonPanelLeft {
-			font-size: 14px;
-			width: 33%;
-			text-align: left;
-			white-space: nowrap;
-			padding-left: 10px;
-		}
+        <div class="SettingsDiv">
+            <div class="propertyHeader">
+                <div class="ExpandedContent propertyHeaderText">
+                    Settings
+                </div>
+            </div>
+            <div id="settingsContainer" class="propertyContent">
+                <div id="moveSettings" class="settingGroup">
+                    <i>No Settings For Move</i>
+                </div>
+                <div id="penSettings" class="settingGroup">
+                    <label> Width </label>
+                    <input type="number" min="1" max="50" value="5" onchange="updateToolSetting('pen', 'width', this.value);" />
 
-		.buttonPanelCenter {
-			width: 33%;
-			text-align: center;
-			font-size: 14px;
-			white-space: nowrap;
-		}
+                    <label> Color</label>
+                    <input type="color" value="#000000" onchange="updateToolSetting('pen', 'color', this.value);" />
 
-		.buttonPanelRight {
-			text-align: right;
-			width: 33%;
-			font-size: 14px;
-			white-space: nowrap;
-		}
-		.MediaWrapper {
-			position: relative;
-			top: 44px;
-			height: calc(100% - 44px);
-			width: 100%;
-			background
-		}
+                    <label> Opacity </label>
+                    <input type="number" min="1" max="100" value="100" onchange="updateToolSetting('pen', 'opacity', this.value);" >
+                </div>
+                <div id="lineSettings" class="settingGroup">
+                    <label>Width </label>
+                    <input type="number" min="1" max="50" value="5" onchange="updateToolSetting('line', 'width', this.value);" >
 
-		.MediaDiv {
-			width: calc(100% - 401px);
-			height: 100%;
-			position: absolute;
-			left: 200px;
-			border-left: 1px solid #BBBDC0;
-			border-right: 1px solid #BBBDC0;
-			background-color: #888;
-			text-align: center;
-			padding: 0px;
-			overflow:auto;
-		}
+                    <label>Color</label>
+                    <input type="color" value="#000000" onchange="updateToolSetting('line', 'color', this.value);" >
 
-		.ToolsDiv {
-			height: 100%;
-			border: none;
-			background-color: #eaeaea;
-			position: absolute;
-			left: 0px;
-			width: 200px;
-		}
+                    <label>Opacity </label>
+                    <input type="number" min="1" max="100" value="100" onchange="updateToolSetting('line', 'opacity', this.value);"  >
+                </div>
+                <div id="rectangleSettings" class="settingGroup">
+                    <i>No Settings For Rectangle</i>
+                </div>
+            </div>
+        </div>
 
-		.SettingsDiv {
-			height: 100%;
-			border: none;
-			background-color: #eaeaea;
-			position: absolute;
-			right: 0px;
-			width: 200px;
-		}
+        <div class="MediaDiv">
+            <canvas class="editor" id="editor"></canvas>
+        </div>
 
-		.propertyHeaderText {
-			display: block;
-			padding: 5px 5px 5px 15px;
-			border-bottom: 1px solid #BBBDC0;
-		}
+    </div>
+</div>
 
-		.propertyHeader {
-			font-size: 18px;
-			white-space: nowrap;
-			min-height: 24px;
-		}
+<script src="ImageEditor.js" ></script>
+<script src="Shapes.js"></script>
+<script src="Tools.js" ></script>
+<script>
+    let config = {
+        canvas : getElement('editor'),
+        image : getElement('Image')
+    }
 
-		.propertyContent {
-			padding: 5px;
-		}
-		.editor {
-			background-color: #444;
-			position: absolute;
-			display: inline-block;
-			left: 0px;
-			top: 0px;
-		}
+    paint = new Paint(config);
+    function setPaintTool(toolName, caller) {
+        paint.setTool(toolName);
 
-		#event_editor {
-			background: transparent;
-		}
+        let settingsContainer = getElement('settingsContainer');
+        let toolContainer= getElement('toolContainer');
+        if (caller) {
+            let selected = getElements('selected',toolContainer)[0];
+            removeClass(selected,'selected');
+            addClass(caller,'selected');
+        }
 
-		.Tool {
-			display: inline-block;
-			width: 50px;
-			height: 50px;
-			border: 1px solid #BBBDC0;
-			font-size: 14px;
-			vertical-align: middle;
-			text-align: center;
-			padding: 5px;
-			cursor: pointer;
-		}
-		.Tool:before {
-			content : ' ';
-			display: inline-block;
-			height: 100%;
-			vertical-align: middle;
-		}
+        let visibleSettings = getElements('visible',settingsContainer)[0];
+        if (visibleSettings) {
+            removeClass(visibleSettings,'visible');
+        }
+        addClass(getElement(toolName+"Settings"),'visible');
+    }
+    setPaintTool('pen');
 
-		.Tool.selected {
-			background: #AEAEFF;
-		}
+    function updateToolSetting(toolName, settingName, value) {
+        paint.updateTool(toolName, settingName, value);
+    }
 
-		.settingGroup {
-			display: none; 
-		}
+    function undo() {
+        paint.undo();
+    }
 
-		.settingGroup.visible {
-			display: block;
-		}
-		
-		</style>
-		
-		<script>
-			function addClass(element, clazz) {
-				element.classList.add(clazz);
-			}
-			function removeClass(element, clazz) {
-				element.classList.remove(clazz);
-			}
-			
-			function getElement(id) {
-				return document.getElementById(id);
-			}
-			
-			function getElements(clazz, parent) {
-				parent = parent || document;
-				return parent.getElementsByClassName(clazz)
-			}
-		</script>
-	</head>
-	<body>
-		<form>
-			<input id="imageData" name="imageData" type="hidden" />
-		</form>
-	
+    let mimeType = "image/jpeg";
+    function download() {
+        let image = getImage().replace(mimeType, "image/octet-stream");
+        let link = document.createElement('a');
+        link.setAttribute('download',
+            'ExportImage.jpg');
+        link.setAttribute('href', image);
+        link.click();
+    }
 
-		<div id="PageWrapper">
-			<div class="MediaWrapper">
-				<div class="ToolsDiv">
-					<div class="propertyHeader">
-						<div class="ExpandedContent propertyHeaderText">
-							Tools
-						</div>
-					</div>
-					<div id="toolContainer" class="propertyContent">
-						<div class="Tool selected" onclick="setPaintTool('pen',this);" title="Pen">
-							Pen
-						</div>
-						<div class="Tool" onclick="setPaintTool('move',this)" title="Move">
-							Move
-						</div>
-						<div class="Tool" onclick="setPaintTool('line',this);" title="Line">
-							Line
-						</div>
-						<div class="Tool" style="width: 75px;" onclick="setPaintTool('rectangle',this);" title="Rectangle">
-							Rectangle
-						</div>
-					</div>
-				</div>
-
-				<div class="SettingsDiv">
-					<div class="propertyHeader">
-						<div class="ExpandedContent propertyHeaderText">
-							Settings
-						</div>
-					</div>
-					<div id="settingsContainer" class="propertyContent">
-						<div id="moveSettings" class="settingGroup">
-							<i>No Settings For Move</i>
-						</div>
-						<div id="penSettings" class="settingGroup">
-							<div>
-								<label> Width </label>
-								<input type="number" min="1" max="50" value="5" onchange="updateToolSetting('pen', 'width', this.value);" />
-
-								<label> Color</label>
-								<input type="color" value="#000000" onchange="updateToolSetting('pen', 'color', this.value);" />
-
-								<label> Opacity </label>
-								<input type="number" min="1" max="100" value="100" onchange="updateToolSetting('pen', 'opacity', this.value);" />
-							</div>
-						</div>
-						<div id="lineSettings" class="settingGroup">
-							<div>
-								<label>Width" </label>
-								<input type="number" min="1" max="50" value="5" onchange="updateToolSetting('line', 'width', this.value);" />
-
-								<label>Color" </label>
-								<input type="color" value="#000000" onchange="updateToolSetting('line', 'color', this.value);" />
-
-								<label>Opacity" </label>
-								<input type="number" min="1" max="100" value="100" onchange="updateToolSetting('line', 'opacity', this.value);"  />
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="MediaDiv">
-					<canvas class="editor" id="editor" />
-				</div>
-
-			</div>
-		</div>
-
-		<script src="ImageEditor.js" ></script>
-		<script src="Shapes.js" /></script>
-		<script src="Tools.js" /></script>
-		<script>
-			var config = {
-				canvas : getElement('editor'),
-				image : getElement('Image')
-			}
-
-			paint = new Paint(config);
-			function setPaintTool(toolName, caller) {
-				paint.setTool(toolName);
-				
-				var settingsContainer = getElement('settingsContainer');
-				var toolContainer= getElement('toolContainer');
-				if (caller) {
-					let selected = getElements('selected',toolContainer)[0];
-					removeClass(selected,'selected');
-					//$('.selected').removeClass('selected');
-					addClass(caller,'selected');
-					//$(caller).addClass('selected');
-				}
-
-				let visibleSettings = getElements('visible',settingsContainer)[0];
-				if (visibleSettings) {
-					removeClass(visibleSettings,'visible');
-				}
-				//$('.settingGroup.visible').removeClass('visible');
-				
-				addClass(getElement(toolName+"Settings"),'visible');
-				//var selector = '#' + toolName + "Settings";
-				//$(selector).addClass('visible');
-			}
-			setPaintTool('pen');
-
-			function updateToolSetting(toolName, settingName, value) {
-				paint.updateTool(toolName, settingName, value);
-			}
-			var mimeType = "#{goDriveMediaForm.currentFile.mediaType.contentType}";
-			function download() {
-				var image = getImage().replace(mimeType, "image/octet-stream");
-				var link = document.createElement('a');
-				link.setAttribute('download',
-						'#{goDriveMediaForm.currentFile.name}');
-				link.setAttribute('href', image);
-				link.click();
-			}
-
-			function getImage() {
-				return paint.getImage(mimeType);
-			}
-
-			function save() {
-				var input = getElement('imageData');
-				input.value = getImage();
-			}
-		</script>
+    function getImage() {
+        return paint.getImage(mimeType);
+    }
+</script>
 </body>
-	</html>
+</html>
