@@ -11,8 +11,8 @@ class Paint {
         let $this = this;
         let canvas = this.#canvas = config.canvas;
         // TODO pass width, height in with config
-        let parentWidth = canvas.parentNode.offsetWidth;
-        let parentHeight = canvas.parentNode.offsetHeight;
+        let parentWidth = canvas.parentNode.clientWidth;
+        let parentHeight = canvas.parentNode.clientHeight;
         canvas.width = parentWidth;
         canvas.height = parentHeight;
         this.#graphics = canvas.getContext("2d");

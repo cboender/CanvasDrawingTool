@@ -1,7 +1,7 @@
 class Tool {
 	constructor(name, cursor, actionHandler) {
 		this.name =name;
-		this.cursor = cursor || 'default'
+		this.cursor =  'default' // TODO cursor image not implemented
         this.actionHandler = actionHandler;
 	}
 	

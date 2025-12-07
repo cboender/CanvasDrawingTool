@@ -1,11 +1,24 @@
+html,body {
+    margin: 0;
+}
+
 #PageWrapper {
     position: absolute;
     width: 100%;
     height: 100%;
 }
 
+.pageHeader {
+    height: 44px;
+    background-color: #AAA;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-inline: 16px;
+}
+
 .MediaWrapper {
-    position: relative;
+    position: absolute;
     top: 44px;
     height: calc(100% - 44px);
     width: 100%;
